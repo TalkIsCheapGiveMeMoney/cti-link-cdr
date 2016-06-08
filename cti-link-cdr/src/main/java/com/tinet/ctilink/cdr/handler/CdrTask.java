@@ -2,6 +2,7 @@ package com.tinet.ctilink.cdr.handler;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.tinet.ctilink.aws.AwsDynamoDBService;
+import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.inc.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,14 +39,14 @@ public class CdrTask implements Runnable {
 
     private void executeCdr(Map<String, String[]> cdrMap) {
         try {
-            Integer enterpriseId = Integer.parseInt(cdrMap.get("enterpriseId")[0]);
-            String uniqueId = cdrMap.get("cdr_unique_id")[0];
-            String mainUniqueId = cdrMap.get("cdr_main_unique_id")[0];
-            Integer callType = Integer.parseInt(cdrMap.get("cdr_call_type")[0]);
+            Integer enterpriseId = Integer.parseInt(cdrMap.get(CdrConst.CDR_ENTERPRISE_ID)[0]);
+            String uniqueId = cdrMap.get(CdrConst.CDR_UNIQUE_ID)[0];
+            String mainUniqueId = cdrMap.get(CdrConst.CDR_MAIN_UNIQUE_ID)[0];
+            Integer callType = Integer.parseInt(cdrMap.get(CdrConst.CDR_CALL_TYPE)[0]);
             String tableName;
-            switch(callType){
+            switch (callType) {
                 case Const.CDR_CALL_TYPE_IB:
-                    tableName = "CdrIb";
+                    tableName = CdrConst.CDR_TABLE_NAME_IB;
                     break;
                 case Const.CDR_CALL_TYPE_IB_CALL_AGNET:
                 case Const.CDR_CALL_TYPE_IB_TRANSFER:
@@ -56,12 +57,12 @@ public class CdrTask implements Runnable {
                 case Const.CDR_CALL_TYPE_IB_BARGE:
                 case Const.CDR_CALL_TYPE_IB_PICKUP:
                 case Const.CDR_CALL_TYPE_IB_CALL_TEL:
-                    tableName = "CdrIbDetail";
+                    tableName = CdrConst.CDR_TABLE_NAME_IB_DETAIL;
                     break;
                 case Const.CDR_CALL_TYPE_OB_PREVIEW:
                 case Const.CDR_CALL_TYPE_OB_DIRECT:
                 case Const.CDR_CALL_TYPE_OB_INTERNAL:
-                    tableName = "CdrObAgent";
+                    tableName = CdrConst.CDR_TABLE_NAME_OB_AGENT;
                     break;
                 case Const.CDR_CALL_TYPE_OB_CALL_CUSTOMER:
                 case Const.CDR_CALL_TYPE_OB_CALL_AGENT:
@@ -71,13 +72,12 @@ public class CdrTask implements Runnable {
                 case Const.CDR_CALL_TYPE_OB_SPY:
                 case Const.CDR_CALL_TYPE_OB_WHISPER:
                 case Const.CDR_CALL_TYPE_OB_BARGE:
-                    tableName = "CdrObAgentDetail";
+                    tableName = CdrConst.CDR_TABLE_NAME_OB_AGENT_DETAIL;
                     break;
                 case Const.CDR_CALL_TYPE_OB_PREDICTIVE:
                 case Const.CDR_CALL_TYPE_OB_WEBCALL:
-                    tableName = "CdrObCustomer";
+                    tableName = CdrConst.CDR_TABLE_NAME_OB_CUSTOMER;
                     break;
-
                 default:
                     logger.error("bad callType:" + callType);
                     return;
@@ -86,20 +86,20 @@ public class CdrTask implements Runnable {
             //构造item
             Item item = new Item();
             //设置pk
-            item.withPrimaryKey("enterpriseId", enterpriseId, "uniqueId", uniqueId);
+            item.withPrimaryKey(CdrConst.CDR_ENTERPRISE_ID, enterpriseId, CdrConst.CDR_UNIQUE_ID, uniqueId);
             for (Map.Entry<String, String[]> entry : cdrMap.entrySet()) {
                 String key = entry.getKey();
                 String[] value = entry.getValue();
                 if (value == null || value.length == 0) {
-                    logger.error(key + "的值为空, 丢弃");
+                    logger.error(key + " value is null, drop");
                     continue;
                 }
                 switch (key) {
-                    case "enterpriseId":
-                    case "uniqueId":
+                    case CdrConst.CDR_ENTERPRISE_ID:
+                    case CdrConst.CDR_UNIQUE_ID:
                         break;
-                    case "startTime":
-                    case "endTime":
+                    case CdrConst.CDR_START_TIME:
+                    case CdrConst.CDR_END_TIME:
                         item.withLong(key, Long.parseLong(value[0]));
                         break;
                     default:

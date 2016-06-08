@@ -67,6 +67,7 @@
 		<property name="sqsName" value="cti-link-cdr" />
 	</bean>
 
+	<!-- AWS dynamoDB -->
 	<bean id="dynamoDBClient" class="com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient">
 		<constructor-arg index="0" ref="awsCredentials" />
 	</bean>

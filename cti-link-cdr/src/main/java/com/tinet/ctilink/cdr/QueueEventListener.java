@@ -25,6 +25,7 @@ public class QueueEventListener {
             return;
         }
 
+        //多个收到?
         System.out.println(json);
     }
 }

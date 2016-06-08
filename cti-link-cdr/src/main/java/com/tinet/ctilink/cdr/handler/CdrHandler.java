@@ -40,6 +40,7 @@ public class CdrHandler extends Thread {
                     if (data != null) {
                         CdrTask cdrTask = new CdrTask(awsDynamoDBService);
                         cdrTask.setData(data);
+
                         pool.execute(cdrTask);
                     }
                 } catch (Exception e) {
