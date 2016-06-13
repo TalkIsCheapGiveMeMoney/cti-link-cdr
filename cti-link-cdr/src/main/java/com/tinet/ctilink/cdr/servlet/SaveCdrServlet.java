@@ -50,8 +50,8 @@ public class SaveCdrServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("receive cdr: " +request.getParameterMap().toString());
+        if (logger.isInfoEnabled()) {
+            logger.info("receive cdr: " +request.getParameterMap().toString());
         }
 
         // check required param

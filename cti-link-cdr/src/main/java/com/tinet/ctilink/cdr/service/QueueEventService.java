@@ -44,7 +44,7 @@ public class QueueEventService extends Thread {
                 if (dataList != null && !dataList.isEmpty()) {
                     for (JSONObject data : dataList) {
                         try {
-                            pool.submit(new QueueEventWorker(awsDynamoDBService, data));
+                            pool.execute(new QueueEventWorker(awsDynamoDBService, data));
                         } catch (Exception e) {
                             logger.error("pool.submit error, ", e);
                         }

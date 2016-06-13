@@ -45,7 +45,7 @@ public class CdrService extends Thread {
                 if (dataList != null && !dataList.isEmpty()) {
                     for (JSONObject data : dataList) {
                         try {
-                            pool.submit(new CdrWorker(awsDynamoDBService, data));
+                            pool.execute(new CdrWorker(awsDynamoDBService, data));
                         } catch (Exception e) {
                             logger.error("pool.submit error, ", e);
                         }

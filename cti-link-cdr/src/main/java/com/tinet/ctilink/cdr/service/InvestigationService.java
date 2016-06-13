@@ -44,7 +44,7 @@ public class InvestigationService extends Thread {
                 if (dataList != null && !dataList.isEmpty()) {
                     for (JSONObject data : dataList) {
                         try {
-                            pool.submit(new InvestigationWorker(awsDynamoDBService, data));
+                            pool.execute(new InvestigationWorker(awsDynamoDBService, data));
                         } catch (Exception e) {
                             logger.error("pool.submit error, ", e);
                         }

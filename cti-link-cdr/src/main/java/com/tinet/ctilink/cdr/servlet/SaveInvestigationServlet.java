@@ -50,8 +50,8 @@ public class SaveInvestigationServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("receive investigation: " +request.getParameterMap().toString());
+        if (logger.isInfoEnabled()) {
+            logger.info("receive investigation: " +request.getParameterMap().toString());
         }
 
         // check required param
