@@ -7,6 +7,7 @@ import com.tinet.ctilink.cdr.inc.CdrMacro;
 import com.tinet.ctilink.inc.Const;
 import com.tinet.ctilink.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,8 +80,8 @@ public class CdrWorker extends Worker {
                         item.withLong(key, Long.parseLong(value.toString()));
                         break;
                     default:
-                        if (value instanceof Set) {
-                            item.withStringSet(key, (Set<String>) value);
+                        if (value instanceof List) {
+                            item.withList(key, (List) value);
                         } else {
                             item.withString(key, value.toString());
                         }

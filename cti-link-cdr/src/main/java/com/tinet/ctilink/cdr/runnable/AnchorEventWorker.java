@@ -6,6 +6,7 @@ import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.inc.CdrMacro;
 import com.tinet.ctilink.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +46,11 @@ public class AnchorEventWorker extends Worker {
                         item.withJSON(key, jsonObject.getJSONObject(key).toString());
                         break;
                     default:
-                        item.withString(key, value.toString());
+                        if (value instanceof List) {
+                            item.withList(key, (List) value);
+                        } else {
+                            item.withString(key, value.toString());
+                        }
                 }
             }
             awsDynamoDBService.putItem(tableName, item);
