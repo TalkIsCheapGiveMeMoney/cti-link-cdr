@@ -1,6 +1,5 @@
 package com.tinet.ctilink;
 
-import com.tinet.ctilink.aws.AwsDynamoDBService;
 import com.tinet.ctilink.cdr.inc.CdrMacro;
 import com.tinet.ctilink.cdr.service.*;
 import org.slf4j.Logger;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 /**
  * 应用程序启动器

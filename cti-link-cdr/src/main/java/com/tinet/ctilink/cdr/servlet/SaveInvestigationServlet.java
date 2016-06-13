@@ -51,21 +51,21 @@ public class SaveInvestigationServlet extends HttpServlet {
         JSONObject result = new JSONObject();
 
         if (logger.isInfoEnabled()) {
-            logger.info("receive investigation: " +request.getParameterMap().toString());
+            logger.info("receive investigation: " + JSONObject.getJSONString(request.getParameterMap()));
         }
 
         // check required param
         if (!CdrUtil.checkRequiredParam(request.getParameterMap(), REQUIRED_PARAM)) {
             logger.error("SaveInvestigationServlet.checkRequiredParam failed, lack of required param");
             result.put("result", -1);
-            result.put("description", "param invalid");
+            result.put("description", "invalid required param");
         }
 
         // handle param
-        JSONObject params = CdrUtil.handleParam(request);
+        JSONObject params = CdrUtil.validateParam(request);
         if (params.isEmpty()) {
             result.put("result", -1);
-            result.put("description", "param invalid");
+            result.put("description", "invalid param");
         } else {
             //放到sqs失败要返回 result -1
             boolean res = investigationMessageQueue.sendMessage(params);

@@ -1,5 +1,6 @@
 package com.tinet.ctilink.cdr.servlet;
 
+import com.alibaba.dubbo.common.json.JSON;
 import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.util.CdrUtil;
 import com.tinet.ctilink.json.JSONObject;
@@ -51,21 +52,21 @@ public class SaveCdrServlet extends HttpServlet {
         JSONObject result = new JSONObject();
 
         if (logger.isInfoEnabled()) {
-            logger.info("receive cdr: " +request.getParameterMap().toString());
+            logger.info("receive cdr data: " + JSONObject.getJSONString(request.getParameterMap()));
         }
 
         // check required param
         if (!CdrUtil.checkRequiredParam(request.getParameterMap(), REQUIRED_PARAM)) {
             logger.error("SaveCdrServlet.checkRequiredParam failed, lack of required param");
             result.put("result", -1);
-            result.put("description", "param invalid");
+            result.put("description", "invalid required param");
         }
 
         // handle param
-        JSONObject params = CdrUtil.handleParam(request);
+        JSONObject params = CdrUtil.validateParam(request);
         if (params.isEmpty()) {
             result.put("result", -1);
-            result.put("description", "param invalid");
+            result.put("description", "invalid param");
         } else {
             //放到sqs失败要返回 result -1
             boolean res = cdrMessageQueue.sendMessage(params);
