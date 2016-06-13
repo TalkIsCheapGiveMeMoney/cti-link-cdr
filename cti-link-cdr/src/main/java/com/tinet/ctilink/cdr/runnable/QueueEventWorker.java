@@ -6,6 +6,7 @@ import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.inc.CdrMacro;
 import com.tinet.ctilink.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +41,11 @@ public class QueueEventWorker extends Worker {
                         item.withLong(key, Long.parseLong(value.toString()));
                         break;
                     default:
-                        item.withString(key, value.toString());
+                        if (value instanceof List) {
+                            item.withList(key, (List) value);
+                        } else {
+                            item.withString(key, value.toString());
+                        }
                 }
             }
             awsDynamoDBService.putItem(tableName, item);

@@ -1,26 +1,20 @@
 package com.tinet.ctilink.cdr.servlet;
 
-import com.alibaba.dubbo.common.json.JSON;
 import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.util.CdrUtil;
 import com.tinet.ctilink.json.JSONObject;
 import com.tinet.ctilink.mq.MessageQueue;
-import com.tinet.ctilink.util.ContextUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
 
 /**
  * @author fengwei //

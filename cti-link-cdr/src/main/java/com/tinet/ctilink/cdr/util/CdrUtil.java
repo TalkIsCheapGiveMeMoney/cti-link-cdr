@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author fengwei //
@@ -18,6 +18,9 @@ public class CdrUtil {
 
     private static Logger logger = LoggerFactory.getLogger(CdrUtil.class);
 
+    /**
+     * 处理参数, 1.将空值删除, 2.数组转成List
+     */
     public static JSONObject validateParam(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
@@ -30,16 +33,16 @@ public class CdrUtil {
 
             //multi value
             if (value.length > 1) {
-                Set<String> valueSet = new HashSet<>();
+                List<String> valueList = new ArrayList<>();
                 for (String val : value) {
                     if (StringUtils.isNotEmpty(val)) {
-                        valueSet.add(val);
+                        valueList.add(val);
                     }
                 }
-                if (valueSet.size() == 1) {
-                    jsonObject.put(entry.getKey(), valueSet.toArray()[0].toString());
-                } else if (valueSet.size() > 1) {
-                    jsonObject.put(entry.getKey(), valueSet);
+                if (valueList.size() == 1) {
+                    jsonObject.put(entry.getKey(), valueList.get(0));
+                } else if (valueList.size() > 1) {
+                    jsonObject.put(entry.getKey(), valueList);
                 } else {
                     logger.debug(entry.getKey() + " value is null, drop it");
                 }
