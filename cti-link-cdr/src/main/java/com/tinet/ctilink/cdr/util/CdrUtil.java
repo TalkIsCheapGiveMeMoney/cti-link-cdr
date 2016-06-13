@@ -18,13 +18,13 @@ public class CdrUtil {
 
     private static Logger logger = LoggerFactory.getLogger(CdrUtil.class);
 
-    public static JSONObject handleParam(HttpServletRequest request) {
+    public static JSONObject validateParam(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
             String[] value = entry.getValue();
             // value is null, drop
             if (value == null || value.length == 0) {
-                logger.error("handleParam, " + entry.getKey() + " value is null, drop it");
+                logger.debug(entry.getKey() + " value is null, drop it");
                 continue;
             }
 
@@ -41,11 +41,11 @@ public class CdrUtil {
                 } else if (valueSet.size() > 1) {
                     jsonObject.put(entry.getKey(), valueSet);
                 } else {
-                    logger.error("handleParam, " + entry.getKey() + " value is null, drop it");
+                    logger.debug(entry.getKey() + " value is null, drop it");
                 }
             } else {
                 if (StringUtils.isEmpty(value[0])) {
-                    logger.error("handleParam, " + entry.getKey() + " value is null, drop it");
+                    logger.debug(entry.getKey() + " value is null, drop it");
                     continue;
                 }
                 jsonObject.put(entry.getKey(), value[0]);
