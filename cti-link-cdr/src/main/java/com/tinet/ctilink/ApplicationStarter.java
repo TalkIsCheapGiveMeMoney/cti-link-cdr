@@ -1,12 +1,8 @@
 package com.tinet.ctilink;
 
-import com.amazonaws.services.dynamodbv2.model.*;
 import com.tinet.ctilink.aws.AwsDynamoDBService;
 import com.tinet.ctilink.cdr.inc.CdrMacro;
-import com.tinet.ctilink.cdr.runnable.*;
 import com.tinet.ctilink.cdr.service.*;
-import com.tinet.ctilink.mq.MessageQueue;
-import com.tinet.ctilink.util.ContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +33,6 @@ public class ApplicationStarter implements ApplicationListener<ContextRefreshedE
 
 	@Autowired
 	private AnchorEventService anchorEventService;
-
-	@Autowired
-	private AwsDynamoDBService awsDynamoDBService;
 
 	@Override
 	public void onApplicationEvent(final ContextRefreshedEvent event) {
