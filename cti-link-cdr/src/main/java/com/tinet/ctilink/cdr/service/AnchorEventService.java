@@ -44,7 +44,7 @@ public class AnchorEventService extends Thread {
                 if (dataList != null && !dataList.isEmpty()) {
                     for (JSONObject data : dataList) {
                         try {
-                            pool.submit(new AnchorEventWorker(awsDynamoDBService, data));
+                            pool.execute(new AnchorEventWorker(awsDynamoDBService, data));
                         } catch (Exception e) {
                             logger.error("pool.submit error, ", e);
                         }
