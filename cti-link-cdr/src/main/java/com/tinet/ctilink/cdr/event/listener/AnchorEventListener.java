@@ -1,31 +1,32 @@
-package com.tinet.ctilink.cdr;
+package com.tinet.ctilink.cdr.event.listener;
 
-import com.tinet.ctilink.cache.RedisService;
-import com.tinet.ctilink.json.JSONObject;
+import com.tinet.ctilink.mq.MessageQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author fengwei //
- * @date 16/6/4 16:52
+ * @date 16/6/12 11:04
  */
-public class QueueEventListener {
+public class AnchorEventListener {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private RedisService redisService;
+    private MessageQueue anchorEventMessageQueue;
 
     public void handleMessage(String json, String channel) {
         if (logger.isInfoEnabled()) {
             logger.info(channel + " receive event : " + json);
         }
-        JSONObject event = JSONObject.fromObject(json);
-        if (event == null) {
+        if (json == null) {
             return;
         }
 
-        //多个收到?
-        System.out.println(json);
+        try {
+            anchorEventMessageQueue.sendMessage(json);
+        } catch (Exception e) {
+            logger.error("AnchorEventListener anchorEventMessageQueue.sendMessage error, ", e);
+        }
     }
 }

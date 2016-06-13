@@ -27,4 +27,22 @@
         <url-pattern>*</url-pattern>
     </filter-mapping>
 
+
+    <servlet>
+        <servlet-name>saveCdrServlet</servlet-name>
+        <servlet-class>com.tinet.ctilink.web.DelegatingServletProxy</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>saveCdrServlet</servlet-name>
+        <url-pattern>/interface/SaveCdr</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>saveInvestigation</servlet-name>
+        <servlet-class>com.tinet.ctilink.web.DelegatingServletProxy</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>saveInvestigation</servlet-name>
+        <url-pattern>/interface/SaveInvestigation</url-pattern>
+    </servlet-mapping>
 </web-app>

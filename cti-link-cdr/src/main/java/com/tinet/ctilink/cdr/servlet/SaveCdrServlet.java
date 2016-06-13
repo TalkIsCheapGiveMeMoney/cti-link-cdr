@@ -1,10 +1,16 @@
 package com.tinet.ctilink.cdr.servlet;
 
+import com.tinet.ctilink.cdr.inc.CdrConst;
+import com.tinet.ctilink.cdr.util.CdrUtil;
 import com.tinet.ctilink.json.JSONObject;
 import com.tinet.ctilink.mq.MessageQueue;
 import com.tinet.ctilink.util.ContextUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,18 +19,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author fengwei //
  * @date 16/5/31 15:22
  */
-@WebServlet("/interface/SaveCdr")
+@Component
 public class SaveCdrServlet extends HttpServlet {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private MessageQueue messageQueue;
+    //required param
+    private final static String[] REQUIRED_PARAM = {CdrConst.CDR_ENTERPRISE_ID, CdrConst.CDR_UNIQUE_ID
+            , CdrConst.CDR_MAIN_UNIQUE_ID, CdrConst.CDR_START_TIME, CdrConst.CDR_END_TIME, CdrConst.CDR_CALL_TYPE};
+
+    @Autowired
+    private MessageQueue cdrMessageQueue;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,22 +48,40 @@ public class SaveCdrServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        JSONObject jsonObject = new JSONObject();
+        JSONObject result = new JSONObject();
 
-        boolean res = messageQueue.sendMessage(request.getParameterMap());
-        if (res) {
-            jsonObject.put("result", 0);
-        } else {
-            jsonObject.put("result", -1);
-            logger.error("SaveCdr sendMessage failed!");
+        if (logger.isDebugEnabled()) {
+            logger.debug("receive cdr: " +request.getParameterMap().toString());
         }
-        out.append(jsonObject.toString());
+
+        // check required param
+        if (!CdrUtil.checkRequiredParam(request.getParameterMap(), REQUIRED_PARAM)) {
+            logger.error("SaveCdrServlet.checkRequiredParam failed, lack of required param");
+            result.put("result", -1);
+            result.put("description", "param invalid");
+        }
+
+        // handle param
+        JSONObject params = CdrUtil.handleParam(request);
+        if (params.isEmpty()) {
+            result.put("result", -1);
+            result.put("description", "param invalid");
+        } else {
+            //放到sqs失败要返回 result -1
+            boolean res = cdrMessageQueue.sendMessage(params);
+            if (res) {
+                result.put("result", 0);
+                result.put("description", "success");
+            } else {
+                result.put("result", -1);
+                result.put("description", "send message error");
+                logger.error("SaveCdrServlet sendMessage failed!");
+            }
+        }
+
+        out.append(result.toString());
         out.flush();
         out.close();
     }
 
-    @Override
-    public void init() throws ServletException {
-        messageQueue = ContextUtil.getBean(MessageQueue.class);
-    }
 }

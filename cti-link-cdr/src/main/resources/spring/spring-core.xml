@@ -41,10 +41,17 @@
 	<bean id="redisService" class="com.tinet.ctilink.cache.RedisService" />
 
 	<!-- 定义接收Queue事件的Redis消息监听器 -->
-	<bean id="queueEventListener" class="com.tinet.ctilink.cdr.QueueEventListener" />
+	<bean id="queueEventListener" class="com.tinet.ctilink.cdr.event.listener.QueueEventListener" />
 	<!-- 注册Redis消息订阅的监听器 -->
 	<redis:listener-container>
 		<redis:listener ref="queueEventListener" serializer="stringRedisSerializer" method="handleMessage" topic="cti-link.queue.event" />
+	</redis:listener-container>
+
+	<!-- 定义接收Anchor事件的Redis消息监听器 -->
+	<bean id="anchorEventListener" class="com.tinet.ctilink.cdr.event.listener.AnchorEventListener" />
+	<!-- 注册Redis消息订阅的监听器 -->
+	<redis:listener-container>
+		<redis:listener ref="anchorEventListener" serializer="stringRedisSerializer" method="handleMessage" topic="cti-link.ivr.anchor.event" />
 	</redis:listener-container>
 
 	<!-- 注入Spring上下文 -->
@@ -62,9 +69,25 @@
 		<property name="sqsClient" ref="sqsClient"/>
 	</bean>
 
-	<bean id="messageQueue" class="com.tinet.ctilink.mq.AmazonSQS">
+	<!-- 消息队列配置 -->
+	<bean id="cdrMessageQueue" class="com.tinet.ctilink.mq.AmazonSQS">
 		<property name="awsSQSService" ref="awsSQSService" />
-		<property name="sqsName" value="cti-link-cdr" />
+		<property name="sqsName" value="${aws.sqs.cdr.name}" />
+	</bean>
+
+	<bean id="investigationMessageQueue" class="com.tinet.ctilink.mq.AmazonSQS">
+		<property name="awsSQSService" ref="awsSQSService" />
+		<property name="sqsName" value="${aws.sqs.cdr.investigation.name}" />
+	</bean>
+
+	<bean id="queueEventMessageQueue" class="com.tinet.ctilink.mq.AmazonSQS">
+		<property name="awsSQSService" ref="awsSQSService" />
+		<property name="sqsName" value="${aws.sqs.cdr.queueEvent.name}" />
+	</bean>
+
+	<bean id="anchorEventMessageQueue" class="com.tinet.ctilink.mq.AmazonSQS">
+		<property name="awsSQSService" ref="awsSQSService" />
+		<property name="sqsName" value="${aws.sqs.cdr.anchorEvent.name}" />
 	</bean>
 
 	<!-- AWS dynamoDB -->
@@ -73,7 +96,7 @@
 	</bean>
 
 	<bean id="awsDynamoDBService" class="com.tinet.ctilink.aws.AwsDynamoDBService">
-		<property name="amazonDynamoDBClient" ref="dynamoDBClient" />
+		<property name="amazonDynamoDB" ref="dynamoDBClient" />
 	</bean>
 
 </beans>

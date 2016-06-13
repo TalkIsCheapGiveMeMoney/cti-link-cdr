@@ -5,6 +5,8 @@ package com.tinet.ctilink.cdr.inc;
  * @date 16/6/8 10:02
  */
 public class CdrConst {
+
+    //Cdr
     public static final String CDR_ENTERPRISE_ID = "cdr_enterprise_id";
 
     public static final String CDR_UNIQUE_ID = "cdr_unique_id";
@@ -13,24 +15,32 @@ public class CdrConst {
 
     public static final String CDR_CALL_TYPE = "cdr_call_type";
 
+    public static final String CDR_DETAIL_CALL_TYPE = "cdr_detail_call_type";
+
     public static final String CDR_START_TIME = "cdr_start_time";
 
     public static final String CDR_END_TIME = "cdr_end_time";
 
 
+    //Queue, Anchor事件和满意度调查
+    public static final String ID = "id";
 
+    public static final String EVENT_TIME = "eventTime";
 
-    //table name
-    public static final String CDR_TABLE_NAME_IB = "CdrIb";
+    public static final String ENTERPRISE_ID = "enterpriseId";
 
-    public static final String CDR_TABLE_NAME_IB_DETAIL = "CdrIbDetail";
+    public static final String DATA = "data";
 
-    public static final String CDR_TABLE_NAME_OB_AGENT = "CdrObAgent";
+    public static final String MAIN_UNIQUE_ID = "mainUniqueId";
 
-    public static final String CDR_TABLE_NAME_OB_AGENT_DETAIL = "CdrObAgentDetail";
+    public static final String START_TIME = "startTime";
 
-    public static final String CDR_TABLE_NAME_OB_CUSTOMER = "CdrObCustomer";
+    public static final String END_TIME = "endTime";
 
-    public static final String CDR_TABLE_NAME_OB_CUSTOMER_DETAIL = "CdrObCustomerDetail";
+    public static final String CALL_TYPE = "callType";
+
+    public static final String NUMBER_TRUNK = "numberTrunk";
+
+    public static final String CUSTOMER_NUMBER = "customerNumber";
 
 }
