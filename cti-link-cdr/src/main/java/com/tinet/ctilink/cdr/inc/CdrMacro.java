@@ -20,7 +20,7 @@ public class CdrMacro {
 
     public static String CDR_IB_DETAIL_TABLE_NAME = "CdrIbDetail";
 
-    public static String CDR_OB_AGENT_TABLE_NAME = "ObAgent";
+    public static String CDR_OB_AGENT_TABLE_NAME = "CdrObAgent";
 
     public static String CDR_OB_AGENT_DETAIL_TABLE_NAME = "CdrObAgentDetail";
 
@@ -34,6 +34,15 @@ public class CdrMacro {
 
     public static String INVESTIGATION_RECORD = "InvestigationRecord";
 
+
+    //cdr push
+    public static Boolean IS_CDR_EVENT_PUBLISH;
+
+    public static String CDR_EVENT_PUBLISH_REDIS_HOST;
+
+    public static Integer CDR_EVENT_PUBLISH_REDIS_PORT;
+
+    public static String CDR_EVENT_PUBLISH_REDIS_CHANNEL;
 
     //加载表名, 支持表名可配置
     public static void loadTableName() {
