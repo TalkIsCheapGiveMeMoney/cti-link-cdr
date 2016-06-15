@@ -1,5 +1,6 @@
 package com.tinet.ctilink.cdr.servlet;
 
+import com.tinet.ctilink.cdr.event.publisher.EventPublisher;
 import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.util.CdrUtil;
 import com.tinet.ctilink.json.JSONObject;
@@ -54,23 +55,24 @@ public class SaveInvestigationServlet extends HttpServlet {
             logger.error("SaveInvestigationServlet.checkRequiredParam failed, lack of required param");
             result.put("result", -1);
             result.put("description", "invalid required param");
-        }
-
-        // handle param
-        JSONObject params = CdrUtil.validateParam(request);
-        if (params.isEmpty()) {
-            result.put("result", -1);
-            result.put("description", "invalid param");
         } else {
-            //放到sqs失败要返回 result -1
-            boolean res = investigationMessageQueue.sendMessage(params);
-            if (res) {
-                result.put("result", 0);
-                result.put("description", "success");
-            } else {
+            // validate param
+            JSONObject params = CdrUtil.validateParam(request);
+            if (params.isEmpty()) {
                 result.put("result", -1);
-                result.put("description", "send message error");
-                logger.error("SaveInvestigationServlet sendMessage failed!");
+                result.put("description", "invalid param");
+            } else {
+                //放到sqs失败要返回 result -1
+                boolean res = investigationMessageQueue.sendMessage(params);
+                if (res) {
+                    EventPublisher.publishInvestigationEvent(params);
+                    result.put("result", 0);
+                    result.put("description", "success");
+                } else {
+                    result.put("result", -1);
+                    result.put("description", "send message error");
+                    logger.error("SaveInvestigationServlet sendMessage failed!");
+                }
             }
         }
 

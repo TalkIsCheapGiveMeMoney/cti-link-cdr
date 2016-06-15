@@ -1,10 +1,13 @@
 package com.tinet.ctilink.cdr.runnable;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.tinet.ctilink.aws.AwsDynamoDBService;
+import com.tinet.ctilink.cdr.event.publisher.EventPublisher;
 import com.tinet.ctilink.cdr.inc.CdrConst;
 import com.tinet.ctilink.cdr.inc.CdrMacro;
 import com.tinet.ctilink.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -19,21 +22,22 @@ public class AnchorEventWorker extends Worker {
         super(awsDynamoDBService, data);
     }
 
-    public void executeData(JSONObject jsonObject) {
+    public void executeData(JSONObject event) {
         try {
-            Integer enterpriseId = jsonObject.getInt(CdrConst.ENTERPRISE_ID);
-            String id = jsonObject.getString(CdrConst.ID);
-
-            String tableName = CdrMacro.ANCHOR_EVENT;
+            Integer enterpriseId = event.getInt(CdrConst.ENTERPRISE_ID);
+            String id = event.getString(CdrConst.ID);
 
             //构造item
             Item item = new Item();
             //设置pk
             item.withPrimaryKey(CdrConst.CDR_ENTERPRISE_ID, enterpriseId, CdrConst.ID, id);
 
-            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+            for (Map.Entry<String, Object> entry : event.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
+                if (value == null || StringUtils.isEmpty(value.toString())) {
+                    continue;
+                }
                 switch (key) {
                     case CdrConst.ENTERPRISE_ID:
                         item.withInt(key, enterpriseId);
@@ -43,7 +47,7 @@ public class AnchorEventWorker extends Worker {
                         break;
                     case CdrConst.DATA:
                         //data是json格式的
-                        item.withJSON(key, jsonObject.getJSONObject(key).toString());
+                        item.withJSON(key, event.getJSONObject(key).toString());
                         break;
                     default:
                         if (value instanceof List) {
@@ -53,9 +57,16 @@ public class AnchorEventWorker extends Worker {
                         }
                 }
             }
-            awsDynamoDBService.putItem(tableName, item);
 
-        } catch (Exception e) {
+            awsDynamoDBService.putItem(CdrMacro.ANCHOR_EVENT_TABLE_NAME, item, "attribute_not_exists(id)", null, null);
+            //publish anchor event
+            EventPublisher.publishAnchorEvent(event);
+        } catch (ConditionalCheckFailedException e) {
+            //主键重复会报错
+            if (logger.isDebugEnabled()) {
+                logger.debug("ConditionalCheckFailedException", e);
+            }
+        }  catch (Exception e) {
             logger.error("executeData error, ", e);
         }
     }

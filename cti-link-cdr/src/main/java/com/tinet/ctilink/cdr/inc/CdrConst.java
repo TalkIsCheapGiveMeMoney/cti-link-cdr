@@ -21,6 +21,9 @@ public class CdrConst {
 
     public static final String CDR_END_TIME = "cdr_end_time";
 
+    public static final String CDR_RECORD_FILE = "cdr_record_file";
+
+    public static final String CDR_RECORD_TYPE = "cdr_record_type";
 
     //Queue, Anchor事件和满意度调查
     public static final String ID = "id";

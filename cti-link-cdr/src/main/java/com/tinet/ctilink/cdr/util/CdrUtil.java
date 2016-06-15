@@ -1,5 +1,7 @@
 package com.tinet.ctilink.cdr.util;
 
+import com.tinet.ctilink.cdr.inc.CdrConst;
+import com.tinet.ctilink.json.JSONArray;
 import com.tinet.ctilink.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,10 +26,11 @@ public class CdrUtil {
     public static JSONObject validateParam(HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+            String key = entry.getKey();
             String[] value = entry.getValue();
             // value is null, drop
             if (value == null || value.length == 0) {
-                logger.debug(entry.getKey() + " value is null, drop it");
+                logger.debug(key + " value is null, drop it");
                 continue;
             }
 
@@ -40,18 +43,18 @@ public class CdrUtil {
                     }
                 }
                 if (valueList.size() == 1) {
-                    jsonObject.put(entry.getKey(), valueList.get(0));
+                    jsonObject.put(key, valueList.get(0));
                 } else if (valueList.size() > 1) {
-                    jsonObject.put(entry.getKey(), valueList);
+                    jsonObject.put(key, valueList);
                 } else {
-                    logger.debug(entry.getKey() + " value is null, drop it");
+                    logger.debug(key + " value is null, drop it");
                 }
             } else {
                 if (StringUtils.isEmpty(value[0])) {
-                    logger.debug(entry.getKey() + " value is null, drop it");
+                    logger.debug(key + " value is null, drop it");
                     continue;
                 }
-                jsonObject.put(entry.getKey(), value[0]);
+                jsonObject.put(key, value[0]);
             }
         }
         return jsonObject;

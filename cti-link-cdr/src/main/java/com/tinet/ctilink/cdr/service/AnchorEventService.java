@@ -1,6 +1,7 @@
 package com.tinet.ctilink.cdr.service;
 
 import com.tinet.ctilink.aws.AwsDynamoDBService;
+import com.tinet.ctilink.cdr.event.publisher.EventPublisher;
 import com.tinet.ctilink.cdr.runnable.AnchorEventWorker;
 import com.tinet.ctilink.cdr.runnable.CdrWorker;
 import com.tinet.ctilink.json.JSONObject;
@@ -31,7 +32,6 @@ public class AnchorEventService extends Thread {
     private ExecutorService pool = Executors.newFixedThreadPool(50);
 
     private volatile boolean shutdown = false;
-
     @Override
     public void run() {
         if (logger.isInfoEnabled()) {

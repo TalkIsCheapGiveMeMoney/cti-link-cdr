@@ -39,7 +39,7 @@ public class ApplicationStarter implements ApplicationListener<ContextRefreshedE
 		java.security.Security.setProperty("networkaddress.cache.ttl", "60");
 
 		//加载cdr表的名字
-		CdrMacro.loadTableName();
+		CdrMacro.loadMacro();
 
 		//启动cdr service
 		cdrService.setName("cti-link-cdr-service");
