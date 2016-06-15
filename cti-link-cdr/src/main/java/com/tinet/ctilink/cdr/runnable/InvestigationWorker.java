@@ -22,14 +22,12 @@ public class InvestigationWorker extends Worker {
     public void executeData(JSONObject jsonObject) {
         try {
             Integer enterpriseId = jsonObject.getInt(CdrConst.ENTERPRISE_ID);
-            String mainUniqueId = jsonObject.getString(CdrConst.CDR_MAIN_UNIQUE_ID);
-
-            String tableName = CdrMacro.INVESTIGATION_RECORD;
+            String mainUniqueId = jsonObject.getString(CdrConst.MAIN_UNIQUE_ID);
 
             //构造item
             Item item = new Item();
             //设置pk
-            item.withPrimaryKey(CdrConst.CDR_ENTERPRISE_ID, enterpriseId, CdrConst.MAIN_UNIQUE_ID, mainUniqueId);
+            item.withPrimaryKey(CdrConst.ENTERPRISE_ID, enterpriseId, CdrConst.MAIN_UNIQUE_ID, mainUniqueId);
 
             for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
                 String key = entry.getKey();
@@ -50,7 +48,7 @@ public class InvestigationWorker extends Worker {
                         }
                 }
             }
-            awsDynamoDBService.putItem(tableName, item);
+            awsDynamoDBService.putItem(CdrMacro.INVESTIGATION_RECORD_TABLE_NAME, item);
 
         } catch (Exception e) {
             logger.error("executeData error, ", e);

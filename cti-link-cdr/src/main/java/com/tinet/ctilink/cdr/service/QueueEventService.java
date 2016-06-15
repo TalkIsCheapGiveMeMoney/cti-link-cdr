@@ -1,6 +1,7 @@
 package com.tinet.ctilink.cdr.service;
 
 import com.tinet.ctilink.aws.AwsDynamoDBService;
+import com.tinet.ctilink.cdr.event.publisher.EventPublisher;
 import com.tinet.ctilink.cdr.runnable.CdrWorker;
 import com.tinet.ctilink.cdr.runnable.QueueEventWorker;
 import com.tinet.ctilink.json.JSONObject;

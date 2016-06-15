@@ -86,6 +86,7 @@ public class CdrWorker extends Worker {
                         }
                 }
             }
+
             awsDynamoDBService.putItem(tableName, item);
 
         } catch (Exception e) {
